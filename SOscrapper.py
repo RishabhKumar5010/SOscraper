@@ -74,17 +74,20 @@ class SOthread:
         
         post = {}
         
-        question = soup.find('div',questionid)
-        quesbody = question.find("div",{'class':quesbody})
-        votes = question.find('div',{'class':vote_sec})
-        post['body'] = quesbody.get_text()
-        user_sec = question.find_all('div',{'class':postusers})[-1]
-        ques_by = user_sec.find('div',{'class':userinfotext}).a
-        post['post_id'] = question.attrs['data-questionid']
-        post['op_name'] = ques_by.get_text()
-        post['op_id'] = question.attrs['data-ownerid']
-        post['votes'] = votes.get_text()
-        
+        try:
+            question = soup.find('div',questionid)
+            quesbody = question.find("div",{'class':quesbody})
+            votes = question.find('div',{'class':vote_sec})
+            post['body'] = quesbody.get_text()
+            user_sec = question.find_all('div',{'class':postusers})[-1]
+            ques_by = user_sec.find('div',{'class':userinfotext}).a
+            post['post_id'] = question.attrs['data-questionid']
+            post['op_name'] = ques_by.get_text()
+            post['op_id'] = question.attrs['data-ownerid']
+            post['votes'] = votes.get_text()
+        except Exception as e:
+            print('In question_data :',e.args)
+            
         return post
 
             

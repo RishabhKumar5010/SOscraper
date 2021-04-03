@@ -8,7 +8,16 @@ class SOthread:
 
     def __init__(self,url):
         self.url = url
-        page = requests.get(URL)
+        maxattempt = 3
+        for i in range(1,maxattempt+1):
+            try:
+                page = requests.get(url, timeout=10)
+                break
+            except requests.Timeout:
+                if i==maxattempt:
+                    print('All attempts over..')
+                    raise Exception('Timeout')
+                print('Timed out! Reattempting..')
         self.soup = BeautifulSoup(page.content, 'html.parser')
         
     @staticmethod
@@ -29,14 +38,12 @@ class SOthread:
 
         posts = []
 
-        multipage = False
         length = 1
         try:
             pager_items = soup.find('div',{'class':'s-pagination'})
             length = len(pager_items.find_all('a'))
         except Exception as e:
-            multipage = False
-            print("Isn't a multipage prob.",e.args)
+            pass
         try:
             for i in range(1,length+1):
                 if i!=1:
@@ -63,7 +70,6 @@ class SOthread:
 
     def question_data(self):
         
-        url = self.url
         soup = self.soup
         
         questionid = 'question'
